@@ -78,9 +78,16 @@ frameworks/base/core/java/android/app/IActivityManager.aidl
 **你自己动手的练习（强烈建议第 1 周就做）：**
 1. 在任意 Android 工程里新建一个 `.aidl` 文件（如 `ICompute.aidl`）
 2. 里面声明一个方法 `int add(int a, int b)`
-3. Build 后在 `build/generated/aidl` 目录里找到自动生成的 `ICompute.java`
+3. Build 后在生成目录里找到自动生成的 `ICompute.java`（路径随 AGP 版本变化：AGP 3.x 在
+   `build/generated/source/aidl/`，AGP 7+ 在 `build/generated/aidl_source_output_dir/`，用 AS 的
+   Find in Files 搜 `ICompute.java` 最稳）
 4. 打开它，找到 `add()` 在 **Proxy** 里怎么打包、在 **Stub.onTransact()** 里怎么解包
 5. 读完你就能秒懂 AMS 的整个 Binder 骨架
+
+> 📁 **完整示例已备好**：`examples/01-aidl-demo/` 里有 `ICompute.aidl`、
+> 还原版的 `ICompute.java`（不用建工程也能逐行读）、服务端 `ComputeService.java`、
+> 客户端 `MainActivity.java`，以及 Proxy 打包 / Stub 解包的逐行拆解和对照表。
+> 打开 [examples/01-aidl-demo/README.md](examples/01-aidl-demo/README.md) 直接开做。
 
 > 在 8.1 里，客户端拿 AMS 的引用只需要一行：
 > ```java
@@ -143,12 +150,24 @@ Android 里几乎每个 App 都是一个**独立进程**。这些进程不是凭
 1. 读 `frameworks/base/core/java/android/app/IActivityManager.aidl` 的前 50 行，找到
    `startActivity`、`attachApplication`、`broadcastIntent` 三个方法声明。
 2. 写一个自己的 AIDL demo（见第 3 节步骤），读生成的 Stub/Proxy 代码。
+   不想从零搭工程？直接用现成的 [examples/01-aidl-demo/README.md](examples/01-aidl-demo/README.md)，
+   代码、生成文件还原、逐行分析全都有。
 3. 在真机/模拟器执行：
    ```bash
+   # ① 确认 system_server 进程存在
    adb shell ps -A | grep system_server
+   # ② 查看 AMS 对外暴露的 service 名字（应是 activity）
+   adb shell service list | grep activity
+   # ③ 看当前 Activity 栈状态
    adb shell dumpsys activity activities | head -30
+   # ④ 如果 ③ 报 Bad activity command（部分厂商 ROM 精简了子命令），用这个兜底：
+   adb shell dumpsys activity | grep -A 20 "mActivities"
    ```
    确认 system_server 进程存在，并看到 AMS 对外暴露的 service 名字是 `activity`。
+
+> 💡 三个命令的分工：`ps` 看「进程在不在」，`service list` 看「注册的服务叫什么名」，
+> `dumpsys` 看「服务内部状态」。面试问「怎么证明 AMS 是个 Binder 服务」，
+> 答 `adb shell service list | grep activity` 是最短路径。
 
 ## 7. 思考题
 

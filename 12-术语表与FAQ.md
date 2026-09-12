@@ -129,7 +129,17 @@ A：为了省电和流畅度 —— 否则每个 App 都能被任意广播唤醒
 ### 官方与权威
 - AOSP 源码（本仓库）：`frameworks/base/services/core/java/com/android/server/am/`
 - Android 官方文档：Activity / Service / Broadcast / ContentProvider 的开发者指南
+- **AIDL 官方文档**（[developer.android.com/guide/components/aidl](https://developer.android.com/guide/components/aidl)）：
+  AIDL 语法、支持的数据类型、定向 tag（in/out/inout）权威说明
+- **AOSP 编译官方文档**（[source.android.com/setup/build/building](https://source.android.com/setup/build/building)）：
+  环境要求、lunch/make 全流程（本系列 16 篇已给中文精简版）
 - AOSP 官方博客：Android Performance（关于进程与内存）
+
+### 源码里的「工具」位置（想研究 AIDL 编译器本身）
+- AIDL 编译器源码：`frameworks/base/tools/aidl/`（C++ 写的，`aidl_language.ypp` 是语法定义）
+- 系统服务入口：`frameworks/base/services/java/com/android/server/SystemServer.java`
+- AMS 本体：`frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java`
+- AMS 接口定义：`frameworks/base/core/java/android/app/IActivityManager.aidl`
 
 ### 书籍（中文）
 | 书 | 特点 |
@@ -146,6 +156,7 @@ A：为了省电和流畅度 —— 否则每个 App 都能被任意广播唤醒
 - `adb shell dumpsys activity`（第 11 篇详解）
 - Android Studio Profiler / Traceview：分析启动耗时
 - `systrace`：抓取启动/渲染 trace
+- AOSP 编译与刷机命令（[第 16 篇](16-AOSP环境搭建与编译.md)）：repo / lunch / make / fastboot 全流程
 
 ---
 
